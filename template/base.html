@@ -1,0 +1,77 @@
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<html>
+    <head>
+		<link rel="stylesheet" href="main.css" type="text/css"/>
+    </head>
+    <body>
+    	<pre id="main"></pre>
+
+		<div id="hidden" style="display:none;">
+			{{.Content}}
+		</div>
+    </body>
+    <script src="jquery-2.1.1.min.js"></script>
+    <script>
+    
+   	function resizeText() {
+   		$("#main").css({left:0, top:0})
+   		$("#main").removeClass("base");
+   		var base=1;
+   		while ($("#main").outerHeight() < window.innerHeight * 0.95 - 5 &&
+			   $("#main").outerWidth() < window.innerWidth * 0.95 - 5){
+   			base += 1
+       		$("#main").css({"font-size":base+"pt"});
+   		}
+    	base-=1;
+	    $("#main").css({"font-size":base+"pt"});
+
+	    $('#main').css({
+   			left: ($(window).innerWidth() - $('#main').outerWidth())/2,
+   			top: ($(window).innerHeight() - $('#main').outerHeight())/2,
+		});
+		$("#main").addClass("base");
+	}
+
+	var timeouts = [];
+
+	function appendLineDelay(l,wait){
+		timeouts.push(setTimeout(function(){
+			$("#main").append(l);
+		}, wait));
+	}
+
+	function regen(){
+		for( var i=0;i<timeouts.length;++i){
+			clearTimeout(timeouts[i]);
+		}
+		timeouts = [];
+
+		var emptyline = "                                                                                \n";
+		$("#main").html(emptyline)
+		for( var i =0; i < 24 ; ++i ){
+			$("#main").append(emptyline)
+		}
+
+		resizeText();
+
+		var children = $("#hidden").children();
+		$("#main").html("┌──────────────────────────────────────────────────────────────────────────────┐")
+		for( var i =0; i < 23 ; ++i ){
+			var c = "\n│                                                                              │";
+			if(i < children.length){
+				c = children[i].cloneNode(true);
+			}
+			appendLineDelay(c, i * 30)
+		}
+
+		appendLineDelay("\n└──────────────────────────────────────────────────────────────────────────────┘", 24*30);
+	}
+
+	$(document).ready(function(){
+		setTimeout(regen, 100);
+	});
+
+	$(window).resize(regen);
+
+    </script>
+</html>

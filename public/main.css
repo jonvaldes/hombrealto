@@ -13,6 +13,7 @@ body{
 	font-family: dos;
 	color:#111;
 	background-color: #111;
+	overflow:hidden;
 }
 pre {
 	font-family: dos;
