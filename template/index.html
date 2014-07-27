@@ -1,0 +1,55 @@
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<html>
+    <head>
+		<link rel="stylesheet" href="main.css" type="text/css"/>
+    </head>
+    <body>
+    	<pre id="main"></pre>
+
+		<div id="hidden" style="display:none;">
+			{{line (center (big "Jon Valdes' Ramblings"))}}
+			{{range .Lines}}{{line .}}{{end}}
+		</div>
+    </body>
+    <script src="jquery-2.1.1.min.js"></script>
+    <script>
+    
+   	function resizeText() {
+   		$("#main").css({left:0, top:0})
+   		$("#main").removeClass("base");
+   		var base=1;
+   		while ($("#main").outerHeight() < window.innerHeight * 0.95 - 5 &&
+			   $("#main").outerWidth() < window.innerWidth * 0.95 - 5){
+   			base += 1
+       		$("#main").css({"font-size":base+"pt"});
+   		}
+    	base-=1;
+	    $("#main").css({"font-size":base+"pt"});
+
+	    $('#main').css({
+   			left: ($(window).innerWidth() - $('#main').outerWidth())/2,
+   			top: ($(window).innerHeight() - $('#main').outerHeight())/2,
+		});
+		$("#main").addClass("base");
+	}
+
+	$(document).ready(function(){
+		var children = $("#hidden").children();
+		$("#main").html("┌──────────────────────────────────────────────────────────────────────────────┐")
+		for( var i =0; i < 23 ; ++i ){
+			var c = "\n│                                                                              │";
+			if(i < children.length){
+				c = children[i];
+			}
+			$("#main").append(c);
+		}
+
+		$("#main").append("\n└──────────────────────────────────────────────────────────────────────────────┘")
+		setTimeout(resizeText,10);
+	});
+
+
+	$(window).resize(resizeText);
+
+    </script>
+</html>
