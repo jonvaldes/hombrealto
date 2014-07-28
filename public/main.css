@@ -12,10 +12,13 @@ body{
 	font-weight: lighter;
 	font-family: dos;
 	color:#111;
-	background-color: #111;
+	background-color: #ffe;
 	overflow:hidden;
+	position: absolute;
+
 }
-pre {
+
+#main {
 	font-family: dos;
 	margin-top:0px;
 	margin-bottom:0px;
@@ -26,15 +29,25 @@ pre {
 }
 
 .base {
-	background-color: rgb(15,12,163);
-	color:white;
+	background-color: rgba(0,0,0,0);
+	color:black;
+}
+
+canvas {
+	display:block;
+	position:absolute;
 }
 
 span .base {
-	background-color: rgb(15,12,163);
-	color:white;	
+	background-color: rgba(0,0,0,0);
+	color:black;	
 }
 
 a {
-	color:yellow;
+	color:#36F;
+}
+
+.cursor {
+	color:#111;
+	background-color: white;
 }

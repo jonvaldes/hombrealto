@@ -3,7 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"io"
+	"html"
 	"log"
 	"net/http"
 	"os"
@@ -16,36 +16,43 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func execTemplate(w io.Writer, name string, data map[string]interface{}) error {
+func execTemplate(w http.ResponseWriter, name string, data map[string]interface{}) error {
+	w.Header().Add("Content-Type", "text/html")
+
+	var temp bytes.Buffer
 	t, err := setupTemplate(name).ParseFiles("template/" + name)
 	if err != nil {
 		return err
 	}
-	return t.Execute(w, data)
+	if err = t.Execute(&temp, data); err != nil {
+		return err
+	}
+
+	t, err = setupTemplate("base.html").ParseFiles("template/base.html")
+	if err != nil {
+		return err
+	}
+
+	return t.Execute(w, map[string]interface{}{
+		"Content": string(temp.Bytes()),
+	})
 }
 
 func main() {
 	r := mux.NewRouter()
 
 	r.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
-		w.Header().Add("Content-Type", "text/html")
-
-		var temp bytes.Buffer
-
-		if err := execTemplate(&temp, "index.html", map[string]interface{}{}); err != nil {
+		if err := execTemplate(w, "index.html", map[string]interface{}{}); err != nil {
 			http.Error(w, "Can't execute template: "+err.Error(), 500)
 			return
 		}
+	})
 
-		err := execTemplate(w, "base.html", map[string]interface{}{
-			"Content": string(temp.Bytes()),
-		})
-
-		if err != nil {
+	r.HandleFunc("/about", func(w http.ResponseWriter, req *http.Request) {
+		if err := execTemplate(w, "about.html", map[string]interface{}{}); err != nil {
 			http.Error(w, "Can't execute template: "+err.Error(), 500)
 			return
 		}
-
 	})
 
 	n := negroni.New()
@@ -82,6 +89,7 @@ func setupTemplate(name string) *template.Template {
 		"line": func(l string) string {
 			nl := cleanLinksRegexA.ReplaceAllString(l, "")
 			nl = cleanLinksRegexB.ReplaceAllString(nl, "")
+			nl = html.UnescapeString(nl)
 
 			cleanLength := len(nl)
 			overflowChars := cleanLength - 76
@@ -93,7 +101,7 @@ func setupTemplate(name string) *template.Template {
 				l += " "
 			}
 
-			return "<span>\n│ " + fmt.Sprintf("%s", l+" │</span>")
+			return "<span>\n| " + fmt.Sprintf("%s", l+" |</span>")
 		},
 	})
 }
