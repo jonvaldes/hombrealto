@@ -49,7 +49,7 @@ func main() {
 
 	r.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) { execPage(w, "index.html") })
 	r.HandleFunc("/about", func(w http.ResponseWriter, req *http.Request) { execPage(w, "about.html") })
-	r.HandleFunc("/projects", func(w http.ResponseWriter, req *http.Request) { execPage(w, "about.html") })
+	r.HandleFunc("/projects", func(w http.ResponseWriter, req *http.Request) { execPage(w, "projects.html") })
 
 	n := negroni.New()
 	n.Use(negroni.NewRecovery())
