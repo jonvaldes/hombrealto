@@ -8,7 +8,7 @@ body{
 	display:block;
 	height:100%;
 	width:100%;
-	-webkit-font-smoothing:none;
+	
 	font-weight: lighter;
 	font-family: dos;
 	color:#111;
@@ -44,10 +44,5 @@ span .base {
 }
 
 a {
-	color:#36F;
-}
-
-.cursor {
-	color:#111;
-	background-color: white;
+	color:#C66;
 }

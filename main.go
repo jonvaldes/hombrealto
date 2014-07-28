@@ -38,22 +38,18 @@ func execTemplate(w http.ResponseWriter, name string, data map[string]interface{
 	})
 }
 
+func execPage(w http.ResponseWriter, name string) {
+	if err := execTemplate(w, name, map[string]interface{}{}); err != nil {
+		http.Error(w, "Can't execute template: "+err.Error(), 500)
+	}
+}
+
 func main() {
 	r := mux.NewRouter()
 
-	r.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
-		if err := execTemplate(w, "index.html", map[string]interface{}{}); err != nil {
-			http.Error(w, "Can't execute template: "+err.Error(), 500)
-			return
-		}
-	})
-
-	r.HandleFunc("/about", func(w http.ResponseWriter, req *http.Request) {
-		if err := execTemplate(w, "about.html", map[string]interface{}{}); err != nil {
-			http.Error(w, "Can't execute template: "+err.Error(), 500)
-			return
-		}
-	})
+	r.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) { execPage(w, "index.html") })
+	r.HandleFunc("/about", func(w http.ResponseWriter, req *http.Request) { execPage(w, "about.html") })
+	r.HandleFunc("/projects", func(w http.ResponseWriter, req *http.Request) { execPage(w, "about.html") })
 
 	n := negroni.New()
 	n.Use(negroni.NewRecovery())
@@ -101,7 +97,7 @@ func setupTemplate(name string) *template.Template {
 				l += " "
 			}
 
-			return "<span>\n| " + fmt.Sprintf("%s", l+" |</span>")
+			return "<span>| " + fmt.Sprintf("%s", l+" |</span>")
 		},
 	})
 }
