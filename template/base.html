@@ -82,12 +82,12 @@
     	[2.668752,1.225105,0.709998,0.637272,200000], // lords3
     	[2.73394,1.369945,1.471923,0.869182, 300000], //lords5
     	[1.008118,2.65392, 0.599124,0.6507, 200000], // lords6
+    	[-2.767266,-0.633839,1.352107,0.705481, 300000], // serfs1
     	[-2.164647,-0.641713,1.277032,1.003342,50000, ],// serfs3
     ];
 
 	function drawAttractor(canvas, ctx){
 		var countPoints = 0;
-
 		var selectedParam = Math.floor(Math.random() * params.length)
     
     	var a = params[selectedParam][0];
@@ -102,33 +102,31 @@
     	var prevy = 1;
 
     	var interval = setInterval(function(){
-    	
-    	var h = canvas.width ;
-    	var w = canvas.height;
-  
-    	for( var i =0; i< 2000; ++i){
-    		countPoints++
-			var x = Math.sin(lasty*b) + c*Math.sin(lastx*b);
-			var y = Math.sin(lastx*a) + d*Math.sin(lasty*a);
+	    	var h = canvas.width ;
+	    	var w = canvas.height;
+	  
+	    	for( var i =0; i< 2000; ++i){
+	    		countPoints++
+				var x = Math.sin(lasty*b) + c*Math.sin(lastx*b);
+				var y = Math.sin(lastx*a) + d*Math.sin(lasty*a);
 
-			var angle = find_angle({x:prevx, y:prevy}, {x:x,y:y}, {x:lastx, y:lasty})
-			
-			var rgb = HSVtoRGB(angle / Math.PI *0.3 + 0.65, 0.6, 0.3);
-			ctx.fillStyle = "rgba("+rgb.r+"," + rgb.g + ", " + rgb.b + ",0.2)";
+				var angle = find_angle({x:prevx, y:prevy}, {x:x,y:y}, {x:lastx, y:lasty})
+				
+				var rgb = HSVtoRGB(angle / Math.PI *0.3 + 0.65, 0.6, 0.3);
+				ctx.fillStyle = "rgba("+rgb.r+"," + rgb.g + ", " + rgb.b + ",0.2)";
 
-			lastx = x;
-			lasty = y;
+				lastx = x;
+				lasty = y;
 
-    		var fx = (x + 6)/6.0 * w - w/2;
-			var fy = (y+6)/6.0 * h - h/2;
-        	ctx.fillRect (fx,fy, 1, 1);
-    	}
-    	if(countPoints > maxPoints){
-    		clearInterval(interval);
-    		ctx.fillStyle = "rgb(0,0,0)";
-    		ctx.fillRect (0,0, 10, 10);
-    	}
-   		},100)
+	    		var fx = (x + 6)/6.0 * w - w/2;
+				var fy = (y+6)/6.0 * h - h/2;
+	        	ctx.fillRect (fx,fy, 1, 1);
+	    	}
+	    	if(countPoints > maxPoints){
+	    		clearInterval(interval);
+	    	}
+   		},100);
+
    		return interval
    	}
 
