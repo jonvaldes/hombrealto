@@ -59,13 +59,14 @@
 		});
 
 		$("#main").addClass("base");
-		var hw = parseInt($("#main").css("width")) * 0.5;
-		$("#maincanvas")[0].width = hw - hw/80;
-		$("#maincanvas")[0].height = parseInt($("#main").css("height"));
+		var w = parseInt($("#main").css("width"));
+		var h = parseInt($("#main").css("height"));
+		$("#maincanvas")[0].width = w * 0.5 - w/160;
+		$("#maincanvas")[0].height = h;
 
 		$("#maincanvas").css({
-			left: parseInt($("#main").css("left")) + hw,
-			top: $("#main").css("top"),
+			left: parseInt($("#main").css("left")) + w*0.5,
+			top: parseInt($("#main").css("top")) + h/50,
 		})
 
 		timeouts.push(setTimeout(function(){

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"html"
 	"log"
+	"math/rand"
 	"net/http"
 	"os"
 	"regexp"
@@ -15,6 +16,8 @@ import (
 	"github.com/codegangsta/negroni"
 	"github.com/gorilla/mux"
 )
+
+var imageGenerators = []string{ "attractor.js", "raymarcher.js"}
 
 func execTemplate(w http.ResponseWriter, name string, data map[string]interface{}) error {
 	w.Header().Add("Content-Type", "text/html")
@@ -35,7 +38,7 @@ func execTemplate(w http.ResponseWriter, name string, data map[string]interface{
 
 	return t.Execute(w, map[string]interface{}{
 		"Content":     string(temp.Bytes()),
-		"ImageScript": "attractor.js",
+		"ImageScript": imageGenerators[rand.Intn(len(imageGenerators))],
 	})
 }
 
