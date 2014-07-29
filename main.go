@@ -34,7 +34,8 @@ func execTemplate(w http.ResponseWriter, name string, data map[string]interface{
 	}
 
 	return t.Execute(w, map[string]interface{}{
-		"Content": string(temp.Bytes()),
+		"Content":     string(temp.Bytes()),
+		"ImageScript": "attractor.js",
 	})
 }
 
