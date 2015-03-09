@@ -48,8 +48,8 @@
    		$("#main").css({left:0, top:0})
    		$("#main").removeClass("base");
    		var base=1;
-   		while ($("#main").outerHeight() < window.innerHeight * 0.95 - 5 &&
-			   $("#main").outerWidth() < window.innerWidth * 0.95 - 5){
+   		while ($("#main").outerHeight() < window.innerHeight * 0.95 - 5 * window.devicePixelRatio &&
+			   $("#main").outerWidth() < window.innerWidth * 0.95 - 5 * window.devicePixelRatio){
    			base += 1
        		$("#main").css({"font-size":base+"pt"});
    		}
@@ -57,8 +57,8 @@
 	    $("#main").css({"font-size":base+"pt"});
 
 	    $('#main').css({
-   			left: ($(window).innerWidth() * window.devicePixelRatio - $('#main').innerWidth())/2,
-   			top: ($(window).innerHeight() * window.devicePixelRatio - $('#main').innerHeight())/2,
+   			left: (window.innerWidth  - $('#main').innerWidth())/2,
+   			top: (window.innerHeight - $('#main').innerHeight())/2,
 		});
 
 		$("#main").addClass("base");
@@ -70,7 +70,7 @@
 		$("#maincanvas").css({
 			left: parseInt($("#main").css("left")) + w*0.5,
 			top: parseInt($("#main").css("top")) + h/50,
-		})
+		});
 
 		timeouts.push(setTimeout(function(){
 			timeouts.push(drawImage(canvas,ctx))
