@@ -1,131 +1,41 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <html>
     <head>
-		<link rel="stylesheet" href="main.css" type="text/css"/>
+		<link rel="stylesheet" href="/main.css" type="text/css"/>
     </head>
     <body>
-    	<canvas id="maincanvas"></canvas>
-    	<pre id="main">┌------------------------------------------------------------------------------┐
-┌------------------------------------------------------------------------------┐
-┌------------------------------------------------------------------------------┐
-┌------------------------------------------------------------------------------┐
-┌------------------------------------------------------------------------------┐
-┌------------------------------------------------------------------------------┐
-┌------------------------------------------------------------------------------┐
-┌------------------------------------------------------------------------------┐
-┌------------------------------------------------------------------------------┐
-┌------------------------------------------------------------------------------┐
-┌------------------------------------------------------------------------------┐
-┌------------------------------------------------------------------------------┐
-┌------------------------------------------------------------------------------┐
-┌------------------------------------------------------------------------------┐
-┌------------------------------------------------------------------------------┐
-┌------------------------------------------------------------------------------┐
-┌------------------------------------------------------------------------------┐
-┌------------------------------------------------------------------------------┐
-┌------------------------------------------------------------------------------┐
-┌------------------------------------------------------------------------------┐
-┌------------------------------------------------------------------------------┐
-┌------------------------------------------------------------------------------┐
-┌------------------------------------------------------------------------------┐
-┌------------------------------------------------------------------------------┐
-┌------------------------------------------------------------------------------┐</pre>
-		
-		<div id="hidden" style="display:none;">
-			{{.Content}}
-		</div>
-        <div id="app.net" style="display:none;">
-            <a href='https://alpha.app.net/jon_valdes' rel='me'></a>
+        <div class="header">
+            <div style="display:inline; float:left; padding:1.5em 2em;"><a href="https://twitter.com/jon_valdes">@jon_valdes</a></div>
+            <div class="logo">
+                <a href="/">hombrealto.com</a>
+            </div>
+            <div style="display:block;padding-right:2em;text-align:left;">
+                <div class="section_link">
+                    <a href="/projects">Projects</a>
+                </div>
+                <div class="section_link">
+                    <a href="/blog">Blog</a>
+                </div>
+                <div class="section_link">
+                    <a href="/thoughts">Thoughts</a>
+                </div>
+                <div class="section_link">
+                    <a href="/about">About me</a>
+                </div>
+            </div>
         </div>
-    
-    <script src="jquery-2.1.1.min.js"></script>
-    <script src="{{.ImageScript}}"></script>
+        <div class="header_shadow">
+        </div>
+        <div class="content">
+            {{.Content}}
+        </div>
+   	</body>
     <script>
-	var canvas = $("#maincanvas")[0];
-    var ctx = canvas.getContext("2d");
-
-   	function resizeText() {
-   		$("#main").css({left:0, top:0})
-   		$("#main").removeClass("base");
-   		var base=1;
-   		while ($("#main").outerHeight() < window.innerHeight * 0.95 - 5 * window.devicePixelRatio &&
-			   $("#main").outerWidth() < window.innerWidth * 0.95 - 5 * window.devicePixelRatio){
-   			base += 1
-       		$("#main").css({"font-size":base+"pt"});
-   		}
-    	base-=1;
-	    $("#main").css({"font-size":base+"pt"});
-
-	    $('#main').css({
-   			left: (window.innerWidth  - $('#main').innerWidth())/2,
-   			top: (window.innerHeight - $('#main').innerHeight())/2,
-		});
-
-		$("#main").addClass("base");
-		var w = parseInt($("#main").css("width"));
-		var h = parseInt($("#main").css("height"));
-		$("#maincanvas")[0].width = w * 0.5 - w/160;
-		$("#maincanvas")[0].height = h;
-
-		$("#maincanvas").css({
-			left: parseInt($("#main").css("left")) + w*0.5,
-			top: parseInt($("#main").css("top")) + h/50,
-		});
-
-		timeouts.push(setTimeout(function(){
-			timeouts.push(drawImage(canvas,ctx))
-		},1000));
-	}
-
-	var timeouts = [];
-
-	function appendLineDelay(l,wait){
-		timeouts.push(setTimeout(function(){
-			$(l).css({width:"0px", left:0, display:"block"});
-			$("#main").append(l);
-			$(l).animate( { width: canvas.width }, 120 );
-		}, wait));
-	}
-
-	function regen(){
-		document.body.style.zoom = 1.0;
-
-		for( var i=0;i<timeouts.length;++i){
-			clearTimeout(timeouts[i]);
-		}
-		timeouts = [];
-
-		var emptyline = "                                                                                \n";
-		$("#main").html(emptyline)
-		for( var i =0; i < 24 ; ++i ){
-			$("#main").append(emptyline)
-		}
-
-		resizeText();
-
-		var children = $("#hidden").children();
-		var first = false;
-
-		$("#main").html("+------------------------------------------------------------------------------+")
-		for( var i =0; i < 23 ; ++i ){
-			var c;
-			if(i < children.length){
-				c = children[i].cloneNode(true);
-			}else{
-				c = document.createElement("span");
-				c.innerHTML ="|                                                                              |";
-			}
-			appendLineDelay(c, i * 60)
-		}
-		var lastLine = document.createElement("span");
-		lastLine.innerHTML ="+------------------------------------------------------------------------------+";
-		appendLineDelay( lastLine, 24*60);
-		
-	}
-
-	$(window).on("load",regen);
-	$(window).resize(regen);
-
+        window.onresize = function(ev){
+            var w = Math.min(window.innerWidth, 1200);
+            document.body.style.minWidth = w;
+            document.body.style.maxWidth = w;
+        };
+        window.onresize();
     </script>
-    </body>
 </html>

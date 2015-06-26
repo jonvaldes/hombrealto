@@ -1,0 +1,129 @@
+@font-face {
+	font-family: bodyfont;
+	//src: url('DroidSerif-Regular.ttf');
+	//src: url('Lato-Regular.ttf');
+	src: url('/OpenSans-Regular.ttf');
+	//src: url('Raleway-Regular.ttf');
+	//src: url('Raleway-Medium.ttf');
+
+}
+@font-face {
+	font-family: headingfont;
+	//src: url('DroidSerif-Bold.ttf');
+	src: url('/museo-500.ttf');
+}
+
+html{
+    display:table;
+    background-color:[html background];
+    margin:0 auto;
+}
+
+body{
+    background-color:[body background],
+    display:table-cell;
+    max-width:1200px;
+    margin:0;
+    color:[body color];
+    font-family: 'bodyfont', serif;
+    padding-bottom:2rem;
+}
+
+.header {
+    background-color: [header background];
+    color:[header color];
+    padding-bottom:0.5rem;
+    padding-left:3rem;
+    padding-right:3rem;
+    text-shadow: 2px 2px 6px #000;
+    background-image: url('/header.jpg');
+    background-position:center;
+}
+.header a,a:visited{
+    font-family: 'headingfont', serif;
+    color:[header color];
+    font-size:1.5rem;
+    text-decoration:none;
+}
+
+.logo{
+    text-align:right;
+    padding:1rem;
+    padding-top:1.5rem;
+    width:100%;
+}
+.logo a,a:visited{
+    font-size:2.4rem;
+    color:[header color];
+}
+
+.section_link{
+    display:inline-block;
+    font-size:1.7rem;
+    padding:0.5rem 1.1rem;
+}
+.header_shadow{
+    background-color: [body background];
+    height:1.5rem;
+    -webkit-box-shadow: inset 0rem 1.5rem 1.5rem -1.5rem rgba(0,0,0,0.45);
+    -moz-box-shadow: inset 0rem 1.5rem 1.5rem -1.5rem rgba(0,0,0,0.45);
+    box-shadow: inset 0rem 1.5rem 1.5rem -1.5rem rgba(0,0,0,0.45);
+    overflow-x:hidden;
+}
+.content{
+    min-height:30rem;
+    text-align:left;
+    padding: 0.1rem 2rem 2rem 2rem;
+    padding-top:-1.6rem;
+    font-size:1.1rem;
+    line-height:150%;
+    letter-spacing:0.07rem;
+    border-right:1px dashed [content border];
+    border-left: 1px dashed [content border];
+}
+
+.content a,.content a:visited{
+    color:[body color];
+}
+
+.content h3 {
+    color:[content heading2];
+    padding:1rem 6rem;
+}
+
+
+.content h2 {
+    margin-left:2rem;
+    font-family: 'headingfont', serif;
+    color:[content heading2];
+    padding-top:1rem;
+}
+
+.content h1 {
+    font-family: 'headingfont', serif;
+    color:[content heading1];
+    padding-top:1.5rem;
+    padding-bottom:1rem;
+}
+
+.content hr {
+    border-color:[content heading2];
+    margin-top:3rem;
+}
+
+.content p {
+    margin-left:4rem;
+    margin-right:3rem;
+}
+.content pre {
+    margin-left:4rem;
+    margin-right:3rem;
+}
+
+/*.content img{
+    float:right;
+    padding:0em 1em;
+}*/
+.centered_img {
+    clear:right;
+}

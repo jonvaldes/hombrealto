@@ -1,13 +1,14 @@
 package main
 
 import (
-	"bytes"
+	"encoding/json"
 	"fmt"
 	"html"
+	"io/ioutil"
 	"log"
-	"math/rand"
 	"net/http"
 	"os"
+	"path/filepath"
 	"regexp"
 	"runtime"
 	"strings"
@@ -15,35 +16,90 @@ import (
 
 	"github.com/codegangsta/negroni"
 	"github.com/gorilla/mux"
+	"github.com/russross/blackfriday"
 )
-
-var imageGenerators = []string{ "attractor.js", "raymarcher.js"}
 
 func execTemplate(w http.ResponseWriter, name string, data map[string]interface{}) error {
 	w.Header().Add("Content-Type", "text/html")
 
-	var temp bytes.Buffer
-	t, err := setupTemplate(name).ParseFiles("template/" + name)
+	filename := "template/" + name
+	absFilename, err := filepath.Abs(filename)
 	if err != nil {
 		return err
 	}
-	if err = t.Execute(&temp, data); err != nil {
+
+	inputData, err := ioutil.ReadFile(absFilename)
+	if err != nil {
 		return err
 	}
 
-	t, err = setupTemplate("base.html").ParseFiles("template/base.html")
+	output := blackfriday.MarkdownCommon(inputData)
+
+	t, err := setupTemplate("base.html").ParseFiles("template/base.html")
 	if err != nil {
 		return err
 	}
 
 	return t.Execute(w, map[string]interface{}{
-		"Content":     string(temp.Bytes()),
-		"ImageScript": imageGenerators[rand.Intn(len(imageGenerators))],
+		"Content": string(output),
 	})
 }
 
 func execPage(w http.ResponseWriter, name string) {
 	if err := execTemplate(w, name, map[string]interface{}{}); err != nil {
+		http.Error(w, "Can't execute template: "+err.Error(), 500)
+	}
+}
+
+func execBlog(w http.ResponseWriter, req *http.Request) {
+	vars := mux.Vars(req)
+	articleName := vars["name"]
+	fmt.Println("Article name: ", articleName)
+	if strings.Contains(articleName, "/") { // Avoid people hacking the FS by loading urls like blog/../../.../etc/passwd
+		http.Error(w, "Blog article not found: "+articleName, 404)
+		return
+	}
+	fpath := "blog/" + articleName
+
+	f, err := os.Open("template/" + fpath)
+	f.Close()
+	if err != nil {
+		http.Error(w, "Blog article not found: "+articleName, 404)
+		return
+	}
+
+	if err := execTemplate(w, fpath, map[string]interface{}{}); err != nil {
+		http.Error(w, "Can't execute template: "+err.Error(), 500)
+	}
+}
+
+func sendCSS(w http.ResponseWriter) {
+
+	var internal = func(w http.ResponseWriter) error {
+		inputData, err := ioutil.ReadFile("template/main.css")
+		if err != nil {
+			return err
+		}
+
+		colorsData, err := ioutil.ReadFile("template/colors.json")
+		if err != nil {
+			return err
+		}
+
+		var colors map[string]string
+
+		if err := json.Unmarshal(colorsData, &colors); err != nil {
+			return err
+		}
+
+		output := string(inputData)
+		for k, v := range colors {
+			output = strings.Replace(output, k, v, -1)
+		}
+		fmt.Fprint(w, output)
+		return nil
+	}
+	if err := internal(w); err != nil {
 		http.Error(w, "Can't execute template: "+err.Error(), 500)
 	}
 }
@@ -54,7 +110,12 @@ func main() {
 	r.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) { execPage(w, "index.html") })
 	r.HandleFunc("/about", func(w http.ResponseWriter, req *http.Request) { execPage(w, "about.html") })
 	r.HandleFunc("/projects", func(w http.ResponseWriter, req *http.Request) { execPage(w, "projects.html") })
-	r.HandleFunc("/articles", func(w http.ResponseWriter, req *http.Request) { execPage(w, "articles.html") })
+	r.HandleFunc("/thoughts", func(w http.ResponseWriter, req *http.Request) { execPage(w, "thoughts.html") })
+	r.HandleFunc("/blog", func(w http.ResponseWriter, req *http.Request) { execPage(w, "articles.html") })
+	r.HandleFunc("/blog/", func(w http.ResponseWriter, req *http.Request) { execPage(w, "articles.html") })
+	r.HandleFunc("/blog/{name}/", execBlog)
+	r.HandleFunc("/blog/{name}", execBlog)
+	r.HandleFunc("/main.css", func(w http.ResponseWriter, req *http.Request) { sendCSS(w) })
 
 	n := negroni.New()
 	n.Use(negroni.NewRecovery())
@@ -62,7 +123,7 @@ func main() {
 	n.Use(negroni.NewStatic(http.Dir("public")))
 	n.UseHandler(r)
 
-	log.Fatal(http.ListenAndServe(":80", n))
+	log.Fatal(http.ListenAndServe(":8080", n))
 }
 
 var cleanLinksRegexA = regexp.MustCompile("<a href=\".*\">")

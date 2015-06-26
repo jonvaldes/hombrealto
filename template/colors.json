@@ -1,0 +1,11 @@
+{
+    "[html background]": "#0F3638",
+    "[body background]": "#0F3638",
+    "[header background]": "#1B676B",
+    "[body color]":"#EAFDE6",
+    "[header color]":"#F7FDF6",
+    "[content heading1]":"#DFF296",
+    "[content heading2]":"#D1F259",
+    "[content border]": "#94B57B"
+
+}
