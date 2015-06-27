@@ -6,6 +6,7 @@
     "[header color]":"#F7FDF6",
     "[content heading1]":"#DFF296",
     "[content heading2]":"#D1F259",
-    "[content border]": "#94B57B"
+    "[content border]": "#94B57B",
+    "[separator color]": "#1F6F73"
 
 }

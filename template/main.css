@@ -127,3 +127,8 @@ body{
 .centered_img {
     clear:right;
 }
+
+.thought{
+    padding:2rem 4rem;
+    border-bottom:1px solid [separator color];
+}
