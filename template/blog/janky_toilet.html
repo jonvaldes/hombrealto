@@ -1,0 +1,24 @@
+
+A janky toilet: of software and development teams
+============================
+```2015/07/08```
+
+I just realized my toilet is a nice analogy for software jankiness. I know, it's a weird claim, but let me explain.
+
+First, what is jankiness? [This blog post by Brian Hook](http://bookofhook.blogspot.com.es/2012/08/suffer-no-jankiness.html) is a pretty good introduction to the concept of jankiness --- your model of how the software works doesn't completely match reality, and suddenly everything goes to hell.
+
+One cause of jankiness is all those little , easy to forget, technical details. Like "always remember to close the connection after you're finished using it", or "this function assumes parameter B will never be bigger than A". As soon as you forget one of those, all that jankiness will make you wish you had chosen another career when you were young.
+
+So, what has my toilet to do with this? Well, the mechanism in my toilet is janky. If you don't press the button again after it's finished flushing, it won't stop the water flow, and it'll keep leaking forever. This is of course not on purpose, and the toilet should be fixed. But if it's just me using it, it's no problem --- I remember the issue, and I just dedicate two extra seconds every time I use it to make sure it doesn't leak. It's janky, but not a problem.
+
+However, I'm not the only one using that toilet --- My girlfriend forgets about this issue maybe one third of the times she flushes the toilet. There's only 2 people on the team, and a little jankiness is already causing problems.
+
+And then there are friends --- they come over, stay for a few hours, and when they leave, the toilet is leaking. Every single time. Even if you warn them before they use it, some of them will forget.
+
+Now, let's translate that to software. Your project has a small detail people have to take into account every time they do _X_. If it's just you on the team, it's no problem, you --- hopefully --- remember, you're careful, crisis avoided. But guess what'll happen when a couple more people start working on that project?
+
+<h3>Jankiness becomes an increasingly bigger problem as the team grows in size.</h3>
+
+The solution to this is pretty obvious: Stop being lazy and fix the flushing mechanism. On the software side, try to fix those toilets as soon as you detect them. Even if you're the only one that'll ever touch that piece of code, do you have perfect memory of what your programmed 2 years ago? Or even 6 months?
+
+Try to make your teammates' lives easier. Even when those teammates are future you.
