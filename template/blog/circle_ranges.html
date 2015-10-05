@@ -1,0 +1,106 @@
+<p>
+<h1 style="text-align:center !important;">Ranges in circles</h1></br>
+</p>
+
+<em>Disclaimer: It's very likely all I'm gonna say in this post is already known and common 
+practice, yet I've remained blissfully unaware of it until now. If that's the case, please tell me!
+</em>
+<p>
+For the last couple of days I've been working with ranges in circles. For example, if I have a range
+[0, Pi/2] and join that range with [Pi/2, Pi], I get [0, Pi]. 
+</p><p>
+Or another example: [-Pi/2, Pi/2] U [0, Pi/2] = [-Pi/2, Pi/2]
+</p><p>
+For this, I needed a way to join and subtract ranges of directions, but Googling around I wasn't
+able to find any nice solutions, so after some thinking I came up with a very simple and robust one.
+</p><p>
+Looking around, it seems the common approach to represent ranges is to store the minimum and maximum
+in the range, and use those directly to do the computations. Unfortunately, this method becomes very
+brittle and cumbersome when doing ranges on a circle, as you have to take into account the possibility 
+of wrapping on both sides of the range on each calculation.
+</p><p>
+So, here's a nice representation that doesn't have that problem:
+</p>
+<pre>
+    struct circle_range {
+        float center;
+        float half_angle;
+    };
+</pre>
+<p>
+By defining the range from a symmetrical half-spread on each side of the middle point, we only have to
+consider wrapping when the center moves, and the two ends of the range will move with it. Even if one
+of the range ends is outside the "normalized" range, it's not problematic for any of the calculations
+we want to do.
+</p><p>
+This, however, is only true if both ranges in an operation are in the same frame of reference (the same 
+"modulo 2Pi"). To keep them that way, we have to "relatively normalize" the sectors:
+</p>
+<pre>
+    float relativeNormalize(float base, float alpha) {
+        while(alpha > base + M_PI) {
+            alpha -= 2*M_PI;
+        }
+        while(alpha < base - M_PI) {
+            alpha += 2*M_PI;
+        }
+        return alpha;
+    }
+</pre>
+<p>
+This, instead of keeping points in a circle in the range [-Pi,Pi] or [0, 2Pi], wraps the second value
+until it's within distance Pi of the first one. By doing that, we can stop worrying about the wrapping
+and work as if the ranges were linear instead.
+</p><p>
+With this system, operations are really simple to define. It's always just normalize, convert to min/max 
+range format, operate as if they were linear ranges, and finally convert back to half-angle format:
+</p>
+<pre>
+
+    circle_range circleRangeUnion(circle_range r, circle_range s){
+        s.center = relativeNormalize(r.center, s.center);
+
+        float r0 = r.center - r.half_angle;
+        float r1 = r.center + r.half_angle;
+        float s0 = s.center - s.half_angle;
+        float s1 = s.center + s.half_angle;
+
+        float result0 = min(r0, s0);
+        float result1 = max(r1, s1);
+
+        circle_range result;
+        result.center = (result0 + result1)/2.f;
+        result.half_angle = (result1 - result0)/2.f;
+
+        return result;
+    }
+
+    circle_range circleRangeIntersection(circle_range r, circle_range s){
+        s.center = relativeNormalize(r.center, s.center);
+
+        float r0 = r.center - r.half_angle;
+        float r1 = r.center + r.half_angle;
+        float s0 = s.center - s.half_angle;
+        float s1 = s.center + s.half_angle;
+
+        float result0 = max(r0, s0);
+        float result1 = min(r1, s1);
+
+        circle_range result;
+        result.center = (result0 + result1)/2.f;
+        result.half_angle = (result1 - result0)/2.f;
+
+        // Note: this will return negative half-angles if ranges are disjoint
+        return result;
+    }
+</pre>
+<p>
+The range subtraction case can be a bit more complex, as there are several cases depending on how the 
+ranges are arranged, but it's pretty simple too (you can figure it out in paper in 2 minutes, just work 
+the cases for linear ranges and you're done).
+</p><p>
+All this assumes the ranges have half_angles in the range [0, 2Pi]. If that's not the case, then all bets are off!
+</p><p>
+And, well, that's it. I hope someone finds this useful!
+</p>
+
